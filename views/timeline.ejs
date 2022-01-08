@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title><%= title %></title>
+        <link title="timeline-styles" rel="stylesheet" href="https://cdn.knightlab.com/libs/timeline3/latest/css/timeline.css">
+        <link rel='stylesheet' href='/stylesheets/tl-style.css' />
+        <script src="https://cdn.knightlab.com/libs/timeline3/latest/js/timeline.js"></script>
+      </head>
+      
+      <body>
+          <h1><%= title %></h1>
+          <div id='timeline-embed' style="width: 100%; height: 600px"></div>
+          <script type="text/javascript">
+            window.timeline = new TL.Timeline('timeline-embed', <%- JSON.stringify(timeline_json) %>);
+          </script>
+      </body>
+</html>
