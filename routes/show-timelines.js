@@ -17,6 +17,8 @@ router.get('/', function(req, res, next) {
   res.send('remember to put in a query');
 });
 
+router.get('/:table', renderTableTimeline);
+
 router.get('/:table/:field/:value', renderTimeline);
 
 module.exports = router;
@@ -56,6 +58,42 @@ async function renderTimeline (req, res, next){
         timeline_json: timelineJson
     })
 }
+
+
+async function renderTableTimeline (req, res, next){
+    // just try atResult, catch with a response that explains how to fix
+    const atResult = await llAt.findMany({
+        baseId: process.env.AIRTABLE_SHOW_BASE,
+        table: req.params.table,
+        view: "MAIN_VIEW",
+        maxRecords: 100
+    })
+    var timelineJson = {
+        "title": {
+            "media": {
+              "url": randomElement(timelineImages),
+              "caption": "timelines.",
+            },
+            "text": {
+              "headline": `ll-timelines`,
+              "text": `<p>Timeline of last 100 from ${req.params.table}</p>`
+            }
+        },
+        events: []
+    }
+    for (let i = 0; i < atResult.length; i++) {
+        const element = atResult[i];
+        timelineJson.events.push(makeEvent(element))
+    }
+    console.log(JSON.stringify(atResult[0], null, 4))
+    console.log(JSON.stringify(timelineJson, null, 4))
+    res.render('timeline', {
+        title: `timeline for ${req.params.table} 🚀`,
+        message: "",
+        timeline_json: timelineJson
+    })
+}
+
 
 async function allUsersTimeline (req, res, next){
     res.render('timeline', {

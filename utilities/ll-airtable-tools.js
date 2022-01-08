@@ -31,4 +31,18 @@ module.exports.findManyByValue = async function(options) {
   return theRecords;
 }
 
-  
+module.exports.findMany = async function(options) {
+  var base = new Airtable({apiKey: process.env.AIRTABLE_API_KEY}).base(options.baseId);
+  const theRecords = [];
+  var queryOptions = {
+    maxRecords: options.maxRecords ? options.maxRecords : 10,
+    view: options.view ? options.view : "MAIN_VIEW",
+  }
+  const result = await base(options.table).select(queryOptions).eachPage(function page(records, next){
+     theRecords.push(...records);
+    //  console.log(JSON.stringify(records))
+     next()
+  })
+  .catch(err=>{console.error(err); return})
+  return theRecords;
+}
