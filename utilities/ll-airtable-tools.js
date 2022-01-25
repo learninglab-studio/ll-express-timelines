@@ -37,6 +37,7 @@ module.exports.findMany = async function(options) {
   var queryOptions = {
     maxRecords: options.maxRecords ? options.maxRecords : 10,
     view: options.view ? options.view : "MAIN_VIEW",
+    sort: options.sort ? options.sort : [{"field": "CreatedTs", "direction": "desc"}]
   }
   const result = await base(options.table).select(queryOptions).eachPage(function page(records, next){
      theRecords.push(...records);
